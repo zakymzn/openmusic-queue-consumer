@@ -12,10 +12,15 @@ class Listener {
         message.content.toString(),
       );
 
-      const playlists = await this._playlistsService.getPlaylists(playlistId);
+      const playlist = await this._playlistsService.getPlaylistWithSongs(playlistId);
+
+      if (!playlist) {
+        throw new Error('Playlist not found');
+      }
+
       const result = await this._mailSender.sendEmail(
         targetEmail,
-        JSON.stringify(playlists),
+        JSON.stringify({ playlist }),
       );
       console.log(result);
     } catch (error) {
